@@ -1,51 +1,50 @@
 const connection = require('./connection');
 const inquirer = require('inquirer');
 
-// Promisify the mysql methods we need
-const query = connection.query.bind(connection);
-const end = connection.end.bind(connection);
-
-async function viewDepartments() {
-    const departments = await query('SELECT * FROM department');
-    console.table(departments);
+function viewDepartments(callback) {
+    connection.query('SELECT * FROM department', (err, departments) => {
+        if (err) throw err;
+        console.table(departments);
+        callback();
+    });
 }
 
-async function viewRoles() {
-    const roles = await query('SELECT * FROM role');
-    console.table(roles);
+function viewRoles(callback) {
+    connection.query('SELECT * FROM role', (err, roles) => {
+        if (err) throw err;
+        console.table(roles);
+        callback();
+    });
 }
 
-async function viewEmployees() {
-    const employees = await query('SELECT * FROM employee');
-    console.table(employees);
+function viewEmployees(callback) {
+    connection.query('SELECT * FROM employee', (err, employees) => {
+        if (err) throw err;
+        console.table(employees);
+        callback();
+    });
 }
 
-async function addDepartment() {
-    const answer = await inquirer.prompt([
+function addDepartment(callback) {
+    inquirer.prompt([
         {
             type: "input",
             name: "department",
             message: "Enter the name of the new department:",
         }
-    ]);
-    await query('INSERT INTO department (name) VALUES (?)', answer.department);
-    console.log("Department added!");
+    ]).then((answer) => {
+        connection.query('INSERT INTO department SET ?', { name: answer.department }, function (err, res) {
+            if (err) throw err;
+            console.log("Department added!");
+            callback();
+        });
+    });
 }
 
-async function addRole() {
-    // implement similar to addDepartment
-}
-
-async function addEmployee() {
-    // implement similar to addDepartment
-}
-
-async function updateEmployeeRole() {
-    // implement
-}
+// implement addRole, addEmployee, and updateEmployeeRole with similar callback pattern
 
 function close() {
-    end();
+    connection.end();
 }
 
 module.exports = {
@@ -53,8 +52,8 @@ module.exports = {
     viewRoles,
     viewEmployees,
     addDepartment,
-    addRole,
-    addEmployee,
-    updateEmployeeRole,
+    // addRole,
+    // addEmployee,
+    // updateEmployeeRole,
     close
 };
