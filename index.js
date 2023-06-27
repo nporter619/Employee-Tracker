@@ -1,27 +1,38 @@
 const inquirer = require('inquirer');
-const db = require('./db/connection');
+const db = require('./db/db');
 
-function startApp() {
-    inquirer
-        .prompt([
+async function main() {
+    let answer;
+    do {
+        answer = await inquirer.prompt([
             {
-                name: 'options',
-                type: 'list',
-                message: 'What would you like to do?',
-                choices: [ /* all your choices here */ ]
+                type: "list",
+                name: "action",
+                message: "What would you like to do?",
+                choices: [
+                    "View all departments",
+                    "View all roles",
+                    "View all employees",
+                    "Add a department",
+                    "Add a role",
+                    "Add an employee",
+                    "Update an employee role",
+                    "Exit"
+                ]
             }
-        ])
-        .then((answer) => {
-            switch (answer.options) {
-                case 'View all departments':
-                    // Call your function that retrieves and displays all departments
-                    break;
-                // Other cases for other options
-                default:
-                    console.log('Goodbye!');
-                    db.end();
-            }
-        });
+        ]);
+
+        if (answer.action === "View all departments") await db.viewDepartments();
+        else if (answer.action === "View all roles") await db.viewRoles();
+        else if (answer.action === "View all employees") await db.viewEmployees();
+        else if (answer.action === "Add a department") await db.addDepartment();
+        else if (answer.action === "Add a role") await db.addRole();
+        else if (answer.action === "Add an employee") await db.addEmployee();
+        else if (answer.action === "Update an employee role") await db.updateEmployeeRole();
+        
+    } while (answer.action !== "Exit");
+
+    db.close();
 }
 
-startApp();
+main();
