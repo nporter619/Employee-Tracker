@@ -88,7 +88,7 @@ function addEmployee(callback) {
             type: "input",
             name: "manager_id",
             message: "Enter the manager ID for the new employee (if any), press Enter if there's no manager:",
-            default: null, // add this line
+            default: null,
             validate: function(value) {
                 if (value === "" || value === null || !isNaN(value)) {
                     return true;
@@ -98,6 +98,10 @@ function addEmployee(callback) {
             }
         }
     ]).then((answer) => {
+        if (answer.manager_id === "") {
+            answer.manager_id = null;
+        }
+
         connection.query('INSERT INTO employee SET ?', answer, function (err, res) {
             if (err) throw err;
             console.log("Employee added!");
@@ -105,6 +109,7 @@ function addEmployee(callback) {
         });
     });
 }
+    
 
 function updateEmployeeRole(callback) {
     inquirer.prompt([
