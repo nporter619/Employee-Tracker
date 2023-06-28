@@ -9,4 +9,4 @@ Install node js run npm i for the required dependencies in the terminal on the f
 ## How to use:
 Once installed the required dependencies login to mysql then from the run the node index.js to start the prompts and create your database from user input.
 
-Walkthrough Video: 
+Walkthrough Video: https://drive.google.com/file/d/1kevKG4mesJoHn99wpoe71v_SWHSsPalN/view?usp=drive_link
